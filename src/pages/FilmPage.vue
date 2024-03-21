@@ -1,5 +1,5 @@
 <template>
-  <wrapper >
+  <wrapper>
     <div class="main_container">
       <div class="pic">
         <img :src="film.poster.url" :alt="this.film.name"/>
@@ -51,12 +51,11 @@
 
 <script>
 import {useFilmsStore} from '../stores/films.js'
-import Films from "../components/Films.vue";
 import Wrapper from "../helpers/Wrapper.vue";
 export default {
   name: "FilmPage",
   props: ['id'],
-  components: {Wrapper, Films},
+  components: {Wrapper},
   setup(){
     const fs = useFilmsStore()
     return {fs}
@@ -114,9 +113,8 @@ export default {
     },
     bookmark(){
       this.addChangesToLS()
-    }
+    },
   },
-
   methods:{
     changeFlag(index){
       if(index === 0){
@@ -180,7 +178,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.wrapper{
+  margin-top: 80px;
+}
 .main_container {
   display: grid;
   grid-template-columns: 30% minmax(350px, auto);

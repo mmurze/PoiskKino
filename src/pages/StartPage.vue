@@ -1,109 +1,61 @@
 <template>
-  <Wrapper>
-    <v-text-field label="Введите название" clearable/>
-    <v-select
-        clearable
-        v-model="searchType"
-        :items="namesSearchTypes()"
-        density="compact"
-        label="Сортировка"
-    />
-    <films
-        :per-page="perPage"
-        :length-pagination="lengthPagination"
-        :props-array="getFilm"
-        :typePage="1"
-    />
-  </Wrapper>
-
+  <Filters
+      v-model:search-type="searchType"
+      v-model:search-name="searchName"
+  />
+  <Films
+      :per-page="perPage"
+      :props-array="getFilm"
+      :typePage="1"
+  />
 </template>
 
 <script>
 import axios from "axios";
 import {useFilmsStore} from "../stores/films.js";
-import {enumTypeSort, enumSortBy, sortedBy, searchTypes} from "../helpers/sort.js";
-import Films from "../components/Films.vue";
-import {storeToRefs} from "pinia";
-import Wrapper from "../helpers/Wrapper.vue";
+import {sortedBy} from "../helpers/sort.js";
+import Films from "../layouts/StartPage/Films.vue"
+import Filters from "../layouts/StartPage/Filters.vue";
 export default {
   name: "StartPage",
-  setup(){
-    const fs = useFilmsStore()
-    const {searchFilm} = storeToRefs(fs)
-    return {fs, searchFilm}
-  },
   components:{
-    Wrapper,
+    Filters,
     Films,
+  },
+  setup(){
+    let fs = useFilmsStore()
+    return {fs}
   },
   data(){
     return{
       perPage: 12,
-      searchType: ' ',
+      searchType:'',
+      searchName:'',
       page: 1,
-      films: []
-    }
-  },
-  watch:{
-    searchFilm(value){
-      if(!value){
-        this.fs.typeSort = enumTypeSort.nothing
-        this.fs.sortBy = enumSortBy.nothing
-        this.searchFilm = ''
-        localStorage.removeItem('searchFilm')
-      }
-      localStorage.setItem('searchFilm', value)
-    },
-    searchType(value){
-      if(!value){
-        this.fs.typeSort = enumTypeSort.nothing
-        this.fs.sortBy = enumSortBy.nothing
-        localStorage.removeItem('searchType')
-      }
-      else {
-        searchTypes.forEach((item) => {
-          if (item.name === value) {
-            this.fs.typeSort = item.typeSort
-            this.fs.sortBy = item.sortBy
-          }
-        })
-        localStorage.setItem('searchType', this.searchType)
-      }
-    },
-  },
-  methods: {
-    namesSearchTypes() {
-      return searchTypes.map((item) => item.name)
-    }
-  },
-  mounted: function () {
-    if (localStorage.getItem('searchType') !== "null") {
-      this.searchType = localStorage.getItem('searchType')
-    }
-    if (localStorage.getItem('searchFilm') !== "null") {
-      this.searchFilm = localStorage.getItem('searchFilm')
     }
   },
   computed:{
     getFilm(){
-      let res = []
-      this.fs.films.forEach((item)=>{
-        item.name.toLowerCase().includes(this.searchFilm.toLowerCase()) ? res.push(item) : false
-      })
-      res = sortedBy(this.fs.typeSort, this.fs.sortBy, res)
-      return res
-    },
-    lengthPagination(){
-      return Math.ceil(this.getFilm.length / this.perPage)
+      if(this.searchType === '' && this.searchName === ''){
+        return this.fs.films
+      }
+      else{
+        let res = []
+        this.fs.films.forEach((item)=>{
+          item.name.toLowerCase().includes(this.searchName.toLowerCase()) ? res.push(item) : false
+        })
+        res = sortedBy(this.searchType, res)
+        return res
+      }
     },
   },
-  async created(key, value) {
+  async created() {
     try {
       const data = await axios.get('')
       this.fs.films = data.data
     }
-    catch (e){
-      console.log(e.name)
+    catch(e){
+      console.log(e)
     }
   }
 }

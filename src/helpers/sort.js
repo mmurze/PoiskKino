@@ -41,41 +41,57 @@ const searchTypes = [
         sortBy: enumSortBy.timing
     }
 ]
-function sortedBy(typeSort, sortBy, array) {
-    let res = array
-    switch (sortBy) {
-        case enumSortBy.timing:
-            switch (typeSort){
-                case enumTypeSort.ascending:
-                    res.sort((a, b) => a.movieLength > b.movieLength ? 1 : -1);
-                    break;
-                case enumTypeSort.decreasing:
-                    res.sort((a, b) => a.movieLength < b.movieLength ? 1 : -1);
-                    break;
-            }
-            break;
-        case enumSortBy.year:
-            switch (typeSort){
-                case enumTypeSort.ascending:
-                    res.sort((a, b) => a.year > b.year ? 1 : -1);
-                    break;
-                case enumTypeSort.decreasing:
-                    res.sort((a, b) => a.year < b.year ? 1 : -1);
-                    break;
-            }
-            break;
-        case enumSortBy.rating:
-            switch (typeSort){
-                case enumTypeSort.ascending:
-                    res.sort((a, b) => a.rating.kp > b.rating.kp ? 1 : -1);
-                    break;
-                case enumTypeSort.decreasing:
-                    res.sort((a, b) => a.rating.kp < b.rating.kp ? 1 : -1);
-                    break;
-            }
-            break;
+function sortedBy(searchType, array) {
+    let typeSort = ""
+    let sortBy = ""
+    if(searchType === ''){
+        typeSort = enumTypeSort.nothing
+        sortBy = enumSortBy.nothing
+        return array
     }
-    return res
+    else{
+        searchTypes.forEach((item) => {
+            if (item.name === searchType) {
+                typeSort = item.typeSort
+                sortBy = item.sortBy
+            }
+        })
+    
+        let res = array
+        switch (sortBy) {
+            case enumSortBy.timing:
+                switch (typeSort){
+                    case enumTypeSort.ascending:
+                        res.sort((a, b) => a.movieLength > b.movieLength ? 1 : -1);
+                        break;
+                    case enumTypeSort.decreasing:
+                        res.sort((a, b) => a.movieLength < b.movieLength ? 1 : -1);
+                        break;
+                }
+                break;
+            case enumSortBy.year:
+                switch (typeSort){
+                    case enumTypeSort.ascending:
+                        res.sort((a, b) => a.year > b.year ? 1 : -1);
+                        break;
+                    case enumTypeSort.decreasing:
+                        res.sort((a, b) => a.year < b.year ? 1 : -1);
+                        break;
+                }
+                break;
+            case enumSortBy.rating:
+                switch (typeSort){
+                    case enumTypeSort.ascending:
+                        res.sort((a, b) => a.rating.kp > b.rating.kp ? 1 : -1);
+                        break;
+                    case enumTypeSort.decreasing:
+                        res.sort((a, b) => a.rating.kp < b.rating.kp ? 1 : -1);
+                        break;
+                }
+                break;
+        }
+        return res
+    }
 }
 
 export {enumTypeSort, enumSortBy, sortedBy, searchTypes}

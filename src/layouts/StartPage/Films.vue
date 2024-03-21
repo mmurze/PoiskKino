@@ -1,35 +1,35 @@
 <template>
-  <ul class="films">
-    <li v-for="item in showArray"
-        :key="item.id"
-        class="film"
-        @click="toFilm(item)"
-    >
-      <div class="pic">
-        <img :src="item.poster.url" :alt="item.name"/>
-      </div>
-      <p>{{item.name}}</p>
-    </li>
-  </ul>
-  <v-pagination
-      v-model="page"
-      :length="lengthPagination"
-      v-if="settingsCSS.pagination"
-      class="w-50 d-flex"
-      style="margin: 0 auto"
-  />
+  <wrapper>
+    <ul class="films">
+      <li v-for="item in showArray"
+          :key="item.id"
+          class="film"
+          @click="toFilm(item)"
+      >
+        <div class="pic">
+          <img :src="item.poster.url" :alt="item.name"/>
+        </div>
+        <p>{{item.name}}</p>
+      </li>
+    </ul>
+    <v-pagination
+        v-model="page"
+        :length="lengthPagination"
+        v-if="settingsCSS.pagination"
+        class="w-50 d-flex"
+        style="margin: 0 auto"
+    />
+  </wrapper>
 </template>
 
 <script>
+import Wrapper from "../../helpers/Wrapper.vue";
 export default {
-  name: "films",
+  name: "Films",
+  components: {Wrapper},
   props: {
     propsArray:{
       type: Array,
-      required: true
-    },
-    lengthPagination:{
-      type: Number,
       required: true
     },
     perPage:{
@@ -45,11 +45,6 @@ export default {
       page: 1
     }
   },
-  watch:{
-    propsArray(value){
-      this.page = 1
-    }
-  },
   methods:{
     toFilm(item){
       return this.$router.push({name : 'film', params: {id: item.id}})
@@ -58,6 +53,9 @@ export default {
   computed:{
     showArray(){
       return this.propsArray.slice((this.page - 1) * this.perPage, this.page * this.perPage)
+    },
+    lengthPagination(){
+      return Math.ceil(this.propsArray.length / this.perPage)
     },
     settingsCSS(){
       if(this.typePage === 1){
@@ -79,7 +77,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .films{
   display: flex;
   flex-wrap: wrap;
@@ -107,6 +105,4 @@ export default {
     gap: 3px;
   }
 }
-
-
 </style>

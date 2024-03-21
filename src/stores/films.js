@@ -6,9 +6,6 @@ export const useFilmsStore = defineStore('films', {
 		return {
 			films: [],
 			currentFilm: null,
-			sortBy: "",
-			typeSort: "",
-			searchFilm: "",
 		}
 	},
 	getters: {},

@@ -14,7 +14,7 @@ export default {
 .wrapper {
   width: 100%;
   max-width: 1200px;
-  margin: 80px auto 0;
+  margin: 0 auto ;
   padding: 0 15px;
   font-size: 18px;
 }
