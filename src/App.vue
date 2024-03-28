@@ -5,7 +5,7 @@
         <v-app-bar-title id="header"
                          @click="this.$router.push({name: 'home'})"
         >
-          <div class="title">
+          <div class="title" style="cursor: pointer;">
             ПоискКино
           </div>
         </v-app-bar-title>
@@ -20,6 +20,23 @@
 </template>
 
 <script>
+import {useFilmsStore} from "./stores/films.js";
+import axios from "axios";
+export default {
+  setup(){
+    let fs = useFilmsStore()
+    return {fs}
+  },
+  async created() {
+    try {
+      const data = await axios.get('')
+      this.fs.films = data.data
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+}
 </script>
 
 <style>
@@ -34,6 +51,7 @@
   max-width: 1200px;
   width: 100%;
   font-style: italic;
+  align-items: baseline;
 }
 .title{
   font-style: italic;

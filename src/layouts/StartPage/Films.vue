@@ -1,21 +1,16 @@
 <template>
   <wrapper>
-    <ul class="films">
+    <ul :class="[typeFilmCard ? 'films_combine' : 'films_horizontal']">
       <li v-for="item in showArray"
           :key="item.id"
-          class="film"
           @click="toFilm(item)"
       >
-        <div class="pic">
-          <img :src="item.poster.url" :alt="item.name"/>
-        </div>
-        <p>{{item.name}}</p>
+        <film-component :item="item" :type="typeFilmCard"/>
       </li>
     </ul>
     <v-pagination
         v-model="page"
         :length="lengthPagination"
-        v-if="settingsCSS.pagination"
         class="w-50 d-flex"
         style="margin: 0 auto"
     />
@@ -24,9 +19,10 @@
 
 <script>
 import Wrapper from "../../helpers/Wrapper.vue";
+import FilmComponent from "../../components/FilmComponent.vue";
 export default {
   name: "Films",
-  components: {Wrapper},
+  components: {FilmComponent, Wrapper},
   props: {
     propsArray:{
       type: Array,
@@ -36,13 +32,19 @@ export default {
       type: Number,
       required: true
     },
-    typePage:{
-      type: Number
+    typeFilmCard:{
+      type: Boolean,
+      required: true
     }
   },
   data(){
     return{
       page: 1
+    }
+  },
+  watch:{
+    propsArray(){
+      this.page = 1
     }
   },
   methods:{
@@ -56,53 +58,28 @@ export default {
     },
     lengthPagination(){
       return Math.ceil(this.propsArray.length / this.perPage)
-    },
-    settingsCSS(){
-      if(this.typePage === 1){
-        return {
-          fontSize: "20px",
-          width: "270px",
-          pagination: true
-        }
-      }
-      else {
-        return {
-          fontSize: "14px",
-          width: "150px",
-          pagination: false
-        }
-      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.films{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px;
+.wrapper{
+  margin-top: 20px;
 }
-.film{
-  display: flex;
-  flex-direction: column;
-  width: 31%;
-  .pic{
-    transition: transform 4s ease-in-out 1s;
-    :hover{
-      transform: scale(105%);
-      box-shadow: 0 0 30px rgba(248, 245, 245, 0.15);
-    }
-  }
-  img{
-    border-radius: 10px;
-    object-fit: cover;
-  }
+.films_combine{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
-@media (min-width: 720px) {
-  .film {
-    gap: 3px;
+.films_horizontal{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
+  gap: 20px;
+}
+@media (max-width: 540px) {
+  .films_combine, .films_horizontal{
+    gap: 10px;
   }
 }
 </style>

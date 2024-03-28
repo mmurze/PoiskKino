@@ -16,6 +16,16 @@ const vuetify = createVuetify({
 			mdi,
 		},
 	},
+	display: {
+		mobileBreakpoint: 'sm',
+		thresholds: {
+			xs: 0,
+			sm: 340,
+			md: 520,
+			lg: 720,
+			xl: 1200,
+		},
+	},
 	components,
 	directives,
 })
